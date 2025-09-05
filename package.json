@@ -1,5 +1,5 @@
 {
-  "name": "op-restaurant",
+  "name": "op-to-do",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -23,5 +23,9 @@
     "webpack-cli": "^6.0.1",
     "webpack-dev-server": "^5.2.2",
     "webpack-merge": "^6.0.1"
+  },
+  "dependencies": {
+    "date-fns": "^4.1.0",
+    "uid": "^2.0.2"
   }
 }
