@@ -1,6 +1,4 @@
 import { uid } from 'uid';
-import { format } from "date-fns";
-
 class Task {
     #title;
     #description;
@@ -13,7 +11,7 @@ class Task {
         this.#title = title;
         this.#description = description;
         this.#dueDate = dueDate;
-        this.priority = priority;
+        this.#priority = priority;
     }
 
     //Accessors
@@ -37,7 +35,7 @@ class Task {
         return this.#priority;
     }
 
-    get uid() {
+    get id() {
         return this.#uid;
     }
 
@@ -66,8 +64,20 @@ class Task {
         this.#isComplete = bool;
     }
 
-    set uid(id) {
+    set id(id) {
         this.#uid = id;
+    }
+
+    //Methods 
+    toJSON() {
+        return {
+            title: this.#title,
+            notes: this.#description,
+            due: this.#dueDate,
+            complete: this.#isComplete,
+            priority: this.#priority,
+            id: this.#uid,
+        }
     }
 
 }
@@ -97,7 +107,7 @@ class TaskList {
                 if (index >= this.#tasks.length) {
                     return { done: true };
                 }
-                return { value: this.task[index++], done: false };
+                return { value: this.tasks[index++], done: false };
             },
         };
     }
@@ -123,7 +133,7 @@ class TaskList {
         return this.#isComplete;
     }
 
-    get uid() {
+    get id() {
         return this.#uid;
     }
 
@@ -133,6 +143,10 @@ class TaskList {
 
     get deletable() {
         return this.#deletable;
+    }
+
+    get tasks() {
+        return this.#tasks;
     }
     //Setters
     set title(str) {
@@ -155,23 +169,37 @@ class TaskList {
         this.#isComplete = bool;
     }
 
-    set uid(id) {
+    set id(id) {
         this.#uid = id;
     }
 
     set deletable(bool) {
-        this.#deletable = this.#deletable;
+        this.#deletable = bool;
     }
 
     //Methods
     add(task) {
         this.#tasks.push(task);
     }
+
+    toJSON() {
+
+        return {
+            title: this.#title,
+            notes: this.#description,
+            due: this.#dueDate,
+            complete: this.#isComplete,
+            priority: this.#priority,
+            id: this.#uid,
+            deletable: this.#deletable,
+            tasks: this.#tasks,
+        }
+    }
 }
 
 class Project {
-    #color = 'white';
-    #head = new TaskList('Inbox', '', null, null);
+    #color = 'yellow';
+    #head = new TaskList('', '', null, null);
     #deletable = true;
     #uid = uid(16);
 
@@ -227,9 +255,23 @@ class Project {
         this.#deletable = bool;
     }
 
+    set id(id) {
+        this.#uid = id;
+    }
+
     //Methods
-    add(list) {
-        this.#head.add(list);
+    add(task) {
+        this.#head.add(task);
+    }
+
+    toJSON() {
+        return {
+            title: this.title,
+            color: this.#color,
+            head: this.#head,
+            deletable: this.#deletable,
+            id: this.#uid,
+        }
     }
 
 }
@@ -265,6 +307,10 @@ class Agenda {
         return this.#projects.length;
     }
 
+    get projects() {
+        return this.#projects;
+    }
+
     //Setters
     set projects(list) {
         this.#projects = list;
@@ -284,13 +330,10 @@ class Agenda {
         return null;
     }
 
-    find(projectID) {
-        const target = this.#projects.find(id => projectID === id);
+    find(id) {
+        const target = this.#projects.find(obj => obj.id === id);
         return target;
     }
-
-    
-
 }
 
 export { Task, TaskList, Project, Agenda };
