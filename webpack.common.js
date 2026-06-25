@@ -12,6 +12,7 @@
    plugins: [
      new HtmlWebpackPlugin({
        title: 'OP To-Do App',
+       template: "./src/template.html",
      }),
    ],
    output: {
